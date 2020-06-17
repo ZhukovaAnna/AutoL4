@@ -294,6 +294,21 @@ public class TestForm {
     }
 
     @Test
+    void shouldNotRegistrationIfDoubleName() {
+        open("http://localhost:9999");
+        SelenideElement form = $("[action]");
+        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
+        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
+        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
+        form.$(cssSelector("[name=name]")).sendKeys("Иванова-Петрова Анна-Мария");
+        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
+        form.$(cssSelector("[data-test-id=agreement]")).click();
+        form.$(byText("Забронировать")).click();
+        $(cssSelector(".notification__title")).waitUntil(Condition.visible, 15000);
+    }
+
+    @Test
     void shouldNotRegistrationIfPhoneEmpty() {
         open("http://localhost:9999");
         SelenideElement form = $("[action]");
