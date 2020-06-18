@@ -6,7 +6,6 @@ import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Parsed;
 import org.openqa.selenium.Keys;
 
 import java.time.LocalDate;
@@ -57,11 +56,12 @@ public class TestForm {
         $(cssSelector(".notification__title")).waitUntil(Condition.visible, 15000);
     }
 
-    @Test
-    void shouldNotRegistrationIfCitySmallLatter() {
+    @ParameterizedTest
+    @ValueSource(strings = {"москва", "Moskva", "@#$%^&", "Рязань"})
+    void shouldNotRegistrationIfCitySmallLatter(String city) {
         open("http://localhost:9999");
         SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("москва");
+        form.$(cssSelector("[data-test-id=city] input")).sendKeys(city);
         form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
         form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
         form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
@@ -87,50 +87,50 @@ public class TestForm {
         $(byText("Поле обязательно для заполнения")).waitUntil(Condition.visible, 15000);
     }
 
-    @Test
-    void shouldNotRegistrationIfCityLatinLetters() {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Moskva");
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
-        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(byText("Доставка в выбранный город недоступна")).waitUntil(Condition.visible, 15000);
-    }
+//    @Test
+//    void shouldNotRegistrationIfCityLatinLetters() {
+//        open("http://localhost:9999");
+//        SelenideElement form = $("[action]");
+//        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Moskva");
+//        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
+//        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
+//        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
+//        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
+//        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
+//        form.$(cssSelector("[data-test-id=agreement]")).click();
+//        form.$(byText("Забронировать")).click();
+//        $(byText("Доставка в выбранный город недоступна")).waitUntil(Condition.visible, 15000);
+//    }
 
-    @Test
-    void shouldNotRegistrationIfCitySpecialSymbols() {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("@#$%^&");
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
-        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(byText("Доставка в выбранный город недоступна")).waitUntil(Condition.visible, 15000);
-    }
+//    @Test
+//    void shouldNotRegistrationIfCitySpecialSymbols() {
+//        open("http://localhost:9999");
+//        SelenideElement form = $("[action]");
+//        form.$(cssSelector("[data-test-id=city] input")).sendKeys("@#$%^&");
+//        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
+//        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
+//        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
+//        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
+//        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
+//        form.$(cssSelector("[data-test-id=agreement]")).click();
+//        form.$(byText("Забронировать")).click();
+//        $(byText("Доставка в выбранный город недоступна")).waitUntil(Condition.visible, 15000);
+//    }
 
-    @Test
-    void shouldNotRegistrationIfCityNotFromTheList() {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Рязань");
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
-        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(byText("Доставка в выбранный город недоступна")).waitUntil(Condition.visible, 15000);
-    }
+//    @Test
+//    void shouldNotRegistrationIfCityNotFromTheList() {
+//        open("http://localhost:9999");
+//        SelenideElement form = $("[action]");
+//        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Рязань");
+//        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
+//        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
+//        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
+//        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
+//        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
+//        form.$(cssSelector("[data-test-id=agreement]")).click();
+//        form.$(byText("Забронировать")).click();
+//        $(byText("Доставка в выбранный город недоступна")).waitUntil(Condition.visible, 15000);
+//    }
 
     @Test
     void shouldNotRegistrationIfDataToday() {
