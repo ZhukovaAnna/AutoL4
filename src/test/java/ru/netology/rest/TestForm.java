@@ -3,6 +3,7 @@ package ru.netology.rest;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -22,6 +23,7 @@ public class TestForm {
     DateTimeFormatter DateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     LocalDate now = LocalDate.now();
 
+    @DisplayName("Test successful")
     @Test
     void shouldRegistrationForm() {
         open("http://localhost:9999");
@@ -37,6 +39,7 @@ public class TestForm {
         $(cssSelector(".notification__title")).waitUntil(Condition.visible, 15000);
     }
 
+    @DisplayName("Test successful")
     @Test
     void shouldSearchFromTheList() {
         open("http://localhost:9999");
@@ -56,22 +59,7 @@ public class TestForm {
         $(cssSelector(".notification__title")).waitUntil(Condition.visible, 15000);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"москва", "Moskva", "@#$%^&", "Рязань"})
-    void shouldNotRegistrationIfCitySmallLatter(String city) {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys(city);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
-        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(byText("Доставка в выбранный город недоступна")).waitUntil(Condition.visible, 15000);
-    }
-
+    @DisplayName("Test successful")
     @Test
     void shouldNotRegistrationIfCityEmpty() {
         open("http://localhost:9999");
@@ -87,51 +75,41 @@ public class TestForm {
         $(byText("Поле обязательно для заполнения")).waitUntil(Condition.visible, 15000);
     }
 
-//    @Test
-//    void shouldNotRegistrationIfCityLatinLetters() {
-//        open("http://localhost:9999");
-//        SelenideElement form = $("[action]");
-//        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Moskva");
-//        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-//        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-//        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-//        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
-//        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-//        form.$(cssSelector("[data-test-id=agreement]")).click();
-//        form.$(byText("Забронировать")).click();
-//        $(byText("Доставка в выбранный город недоступна")).waitUntil(Condition.visible, 15000);
-//    }
+    @DisplayName("Tests failed")
+    @ParameterizedTest
+    @ValueSource(strings = {"москва", "Рязань"})
+    void shouldNotRegistrationIfCitySmallLatterNotFromTheList(String city) {
+        open("http://localhost:9999");
+        SelenideElement form = $("[action]");
+        form.$(cssSelector("[data-test-id=city] input")).sendKeys(city);
+        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
+        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
+        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
+        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
+        form.$(cssSelector("[data-test-id=agreement]")).click();
+        form.$(byText("Забронировать")).click();
+        $(byText("Доставка в выбранный город недоступна")).waitUntil(Condition.visible, 15000);
+    }
 
-//    @Test
-//    void shouldNotRegistrationIfCitySpecialSymbols() {
-//        open("http://localhost:9999");
-//        SelenideElement form = $("[action]");
-//        form.$(cssSelector("[data-test-id=city] input")).sendKeys("@#$%^&");
-//        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-//        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-//        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-//        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
-//        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-//        form.$(cssSelector("[data-test-id=agreement]")).click();
-//        form.$(byText("Забронировать")).click();
-//        $(byText("Доставка в выбранный город недоступна")).waitUntil(Condition.visible, 15000);
-//    }
+    @DisplayName("Tests successful")
+    @ParameterizedTest
+    @ValueSource(strings = {"Moskva", "@#$%^&"})
+    void shouldNotRegistrationIfCitySpecialSymbolsAndLatinLetters(String city) {
+        open("http://localhost:9999");
+        SelenideElement form = $("[action]");
+        form.$(cssSelector("[data-test-id=city] input")).sendKeys(city);
+        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
+        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
+        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
+        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
+        form.$(cssSelector("[data-test-id=agreement]")).click();
+        form.$(byText("Забронировать")).click();
+        $(byText("Доставка в выбранный город недоступна")).waitUntil(Condition.visible, 15000);
+    }
 
-//    @Test
-//    void shouldNotRegistrationIfCityNotFromTheList() {
-//        open("http://localhost:9999");
-//        SelenideElement form = $("[action]");
-//        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Рязань");
-//        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-//        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-//        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-//        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
-//        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-//        form.$(cssSelector("[data-test-id=agreement]")).click();
-//        form.$(byText("Забронировать")).click();
-//        $(byText("Доставка в выбранный город недоступна")).waitUntil(Condition.visible, 15000);
-//    }
-
+    @DisplayName("Single test successful")
     @Test
     void shouldNotRegistrationIfDataToday() {
         open("http://localhost:9999");
@@ -147,8 +125,10 @@ public class TestForm {
         $(byText("Заказ на выбранную дату невозможен")).waitUntil(Condition.visible, 15000);
     }
 
-    @Test
-    void shouldNotRegistrationIfDataEmpty() {
+    @DisplayName("Tests successful")
+    @ParameterizedTest
+    @ValueSource(strings = {"", "rttyyuuiio"})
+    void shouldNotRegistrationIfDataEmptyDataLatter() {
         open("http://localhost:9999");
         SelenideElement form = $("[action]");
         form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
@@ -161,21 +141,7 @@ public class TestForm {
         $(byText("Неверно введена дата")).waitUntil(Condition.visible, 15000);
     }
 
-    @Test
-    void shouldNotRegistrationIfDataLatter() {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys("rttyyuuiio");
-        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
-        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(byText("Неверно введена дата")).waitUntil(Condition.visible, 15000);
-    }
-
+    @DisplayName("Single test successful")
     @Test
     void shouldNotRegistrationIfNameEmpty() {
         open("http://localhost:9999");
@@ -191,126 +157,41 @@ public class TestForm {
         $(byText("Поле обязательно для заполнения")).waitUntil(Condition.visible, 15000);
     }
 
-    @Test
-    void shouldNotRegistrationIfNameSmallLatter() {
+    @DisplayName("Tests failed")
+    @ParameterizedTest
+    @ValueSource(strings = {"@#$%%^^&&", "4567884432", "Ivanova Anna", "Иванова-Петрова Анна-Мария"})
+    void shouldNotRegistrationIfNameSpecialSymbolsFiguresLatinLatterDoubleName(String name) {
         open("http://localhost:9999");
         SelenideElement form = $("[action]");
         form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
         form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
         form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
         form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("иванова анна");
+        form.$(cssSelector("[name=name]")).sendKeys(name);
         form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
         form.$(cssSelector("[data-test-id=agreement]")).click();
         form.$(byText("Забронировать")).click();
         $(byText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.")).waitUntil(Condition.visible, 15000);
     }
 
-    @Test
-    void shouldNotRegistrationIfNameSpecialSymbols() {
+    @DisplayName("Test successful")
+    @ParameterizedTest
+    @ValueSource(strings = {"иванова анна", "ИВАНОВА АННА", "И", "Ивааааааааааааааааааааааанова Анннннннннннннннннннннннннннннна"})
+    void shouldNotRegistrationIfNameSmallLatterCapsLockMoreLatter1Latter(String name) {
         open("http://localhost:9999");
         SelenideElement form = $("[action]");
         form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
         form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
         form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
         form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("@#$%%^^&&");
+        form.$(cssSelector("[name=name]")).sendKeys(name);
         form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
         form.$(cssSelector("[data-test-id=agreement]")).click();
         form.$(byText("Забронировать")).click();
         $(byText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.")).waitUntil(Condition.visible, 15000);
     }
 
-    @Test
-    void shouldNotRegistrationIfNameFigures() {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("4567884432");
-        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(byText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.")).waitUntil(Condition.visible, 15000);
-    }
-
-    @Test
-    void shouldNotRegistrationIfNameLatinLatter() {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("Ivanova Anna");
-        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(byText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.")).waitUntil(Condition.visible, 15000);
-    }
-
-    @Test
-    void shouldNotRegistrationIfNameCapsLock() {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("ИВАНОВА АННА");
-        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(byText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.")).waitUntil(Condition.visible, 15000);
-    }
-
-    @Test
-    void shouldNotRegistrationIfNameMoreLatter() {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("Ивааааааааааааааааааааааанова Анннннннннннннннннннннннннннннна");
-        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(byText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.")).waitUntil(Condition.visible, 15000);
-    }
-
-    @Test
-    void shouldNotRegistrationIfName1Latter() {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("И");
-        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(byText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.")).waitUntil(Condition.visible, 15000);
-    }
-
-    @Test
-    void shouldNotRegistrationIfDoubleName() {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("Иванова-Петрова Анна-Мария");
-        form.$(cssSelector("[name=phone]")).sendKeys("+79109876543");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(cssSelector(".notification__title")).waitUntil(Condition.visible, 15000);
-    }
-
+    @DisplayName("Single test successful")
     @Test
     void shouldNotRegistrationIfPhoneEmpty() {
         open("http://localhost:9999");
@@ -326,8 +207,10 @@ public class TestForm {
         $(byText("Поле обязательно для заполнения")).waitUntil(Condition.visible, 15000);
     }
 
-    @Test
-    void shouldNotRegistrationIfPhoneNoPlus() {
+    @DisplayName("Tests successful")
+    @ParameterizedTest
+    @ValueSource(strings = {"79109876543", "лорпимакк", "+7987654", "+791098765454321"})
+    void shouldNotRegistrationIfPhoneNoPlusPhoneLatter7Figures12Figures(String phone) {
         open("http://localhost:9999");
         SelenideElement form = $("[action]");
         form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
@@ -335,52 +218,7 @@ public class TestForm {
         form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
         form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
         form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
-        form.$(cssSelector("[name=phone]")).sendKeys("79109876543");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(byText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.")).waitUntil(Condition.visible, 15000);
-    }
-
-    @Test
-    void shouldNotRegistrationIfPhoneLatter() {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
-        form.$(cssSelector("[name=phone]")).sendKeys("лорпимакк");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(byText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.")).waitUntil(Condition.visible, 15000);
-    }
-
-    @Test
-    void shouldNotRegistrationIfPhone7Figures() {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
-        form.$(cssSelector("[name=phone]")).sendKeys("+7987654");
-        form.$(cssSelector("[data-test-id=agreement]")).click();
-        form.$(byText("Забронировать")).click();
-        $(byText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.")).waitUntil(Condition.visible, 15000);
-    }
-
-    @Test
-    void shouldNotRegistrationIfPhone12Figures() {
-        open("http://localhost:9999");
-        SelenideElement form = $("[action]");
-        form.$(cssSelector("[data-test-id=city] input")).sendKeys("Москва");
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        form.$(cssSelector("[data-test-id=date] input")).doubleClick().sendKeys(Keys.DELETE);
-        form.$(cssSelector("[data-test-id=date] input")).sendKeys(data.format(DateFormatter));
-        form.$(cssSelector("[name=name]")).sendKeys("Иванова Анна");
-        form.$(cssSelector("[name=phone]")).sendKeys("+791098765454321");
+        form.$(cssSelector("[name=phone]")).sendKeys(phone);
         form.$(cssSelector("[data-test-id=agreement]")).click();
         form.$(byText("Забронировать")).click();
         $(byText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.")).waitUntil(Condition.visible, 15000);
